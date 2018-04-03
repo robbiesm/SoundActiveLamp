@@ -5,6 +5,15 @@
  *  Author: robbi
  */
 #include "main.h"
+
+void setupPorts(void)
+{
+	//PA1 ADC input
+	//PA2 Pixel output
+	//PA3 button input with interrupt, external Pullup placed
+	//PA7 Indication l\e\d\ output
+	DDRA = (1<<PIXELPIN) | (1<<LEDPIN);
+}
 void visualize_music(float fade_scale)
 {
 	
@@ -26,6 +35,7 @@ void initTimer1(void)
 	//TCCR1A &= (0<<WGM11) & (0<<WGM10); Forcing WGM[1:0] at 0
 	TCCR1B |= (1<<WGM12) | (1<<CS10);	
 }
+
 void cycleDelay(uint8_t cycles)
 {
 	//init + start Timer1 en wacht op interrupt op OCF1A -> return
@@ -41,9 +51,10 @@ void cycleDelay(uint8_t cycles)
 void initADC(void)
 {
 	//ADC setup from tutorial
-	ADMUX |= (1<<REFS0) | (1<<ADLAR);		//ADC0 with AVcc
-	ADCSRA |= (1<<ADEN) | (1<<ADATE) | (7<<ADPS2);
-	ADCSRB |= (1<<ADTS1) | (1<<ADTS0);		
+	ADMUX |= (1<<REFS0) | (1<<MUX0);		//ADC1 with AVcc on PA0
+	ADCSRA |= (1<<ADEN) | (1<<ADATE) | (7<<ADPS2);	//ADC enable, Auto trgger enable, ClkDiv 128
+	ADCSRB |= (1<<ADTS1) | (1<<ADTS0);	//Auto trigger on TC0 CMA
+	DIDR0 |= (1<<ADC1D);				//Disalbe Digital input on PA1
 }
 
 void startADC(void)

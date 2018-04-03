@@ -12,20 +12,25 @@
 #define F_CPU 16000000UL
 
 #include <avr/io.h>
+#include <avr/iotn84a.h>
 #include "Libraries/FastLED-master/FastLED.h"
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
 //Hardware defines for the ATTiny84A
-#ifdef (__AVR_ATtiny84A__)
-#define LEDPIN 2
-#define LEDPORT PORTA
-#define ANALOGPIN 0
+//#ifdef (__AVR_ATtiny84A__)
+#define PIXELPIN 2
+#define PIXELPORT PORTA
+#define ANALOGPIN 1
 #define ANALOGPORT PORTA
+#define BUTTONPIN 3
+#define BUTTONPORT PORTA
+#define LEDPIN 7
+#define LEDPORT PORTA
 //Hardware defines for the ATmega328P
-#elif defined(__AVR_ATmega328P__)
+//#elif defined(__AVR_ATmega328P__)
 
-#endif
+//#endif
 
 //Cycle timings for the WS2812B 
 #define T0H 64		//0.4µs
@@ -43,6 +48,7 @@
 
 //Function Prototypes
 static void Setup(void);
+void setupPorts(void);
 void visualize_music(float);
 int compute_average(int *avgs, int len);
 
