@@ -44,3 +44,17 @@ static void Setup(void)
 {
 
 }
+
+// ISR(TIMER1_COMPA_vect)
+// {
+// 	
+// }
+// ISR(PCINT0_vect)
+// {
+// 	
+// }
+// ISR(ADC_vect)
+// {
+// 	
+// }
+/*End*/

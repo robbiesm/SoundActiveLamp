@@ -12,34 +12,35 @@
 #define F_CPU 16000000UL
 
 #include <avr/io.h>
-#include <avr/iotn84a.h>
-#include "Libraries/FastLED-master/FastLED.h"
-#include <util/delay.h>
+//#include <avr/iotn84a.h>
 #include <avr/interrupt.h>
 
-//Hardware defines for the ATTiny84A
-//#ifdef (__AVR_ATtiny84A__)
-#define PIXELPIN 2
-#define PIXELPORT PORTA
-#define ANALOGPIN 1
-#define ANALOGPORT PORTA
-#define BUTTONPIN 3
-#define BUTTONPORT PORTA
-#define LEDPIN 7
-#define LEDPORT PORTA
-//Hardware defines for the ATmega328P
-//#elif defined(__AVR_ATmega328P__)
+#if defined(__AVR_ATmega328P__)
+	#define userPort
+	#define PIXELPIN 2
+	#define ANALOGPIN 1
+	#define BUTTONPIN 3
+	#define LEDPIN 7
 
-//#endif
+#elif defined(__AVR_ATtiny84A__)
+	#define userPort PORTA
+	#define userDDR  DDRA
+	
+	#define ANALOGPIN 1			//ADC1 input
+	#define BUTTONPIN 3			//PCINT0, source3
+	#define PIXELPIN 6			//16bit Timer1 outputA
+	#define LEDPIN 7			//8bit Timer0 outputB
+#endif
 
 //Cycle timings for the WS2812B 
-#define T0H 64		//0.4탎
-#define T0L 136		//0.85탎
-#define T1H 128		//0.8탎
-#define T1L 72		//0.45탎
-#define Treset 8000 //50탎
+#define T0H 		//0.4탎
+#define T0L 		//0.85탎
+#define T1H 		//0.8탎
+#define T1L 		//0.45탎
+#define Treset		//60탎
 
 //Defines for library/Code
+#define Pixels	60
 
 
 //Macro's
@@ -48,10 +49,10 @@
 
 //Function Prototypes
 static void Setup(void);
-void setupPorts(void);
+void setupIO(void);
 void visualize_music(float);
 int compute_average(int *avgs, int len);
-
+void initTimer1(void);
 void initADC(void);
 void startADC(void);
 void stopADC();

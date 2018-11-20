@@ -2,18 +2,24 @@
  * function.c
  *
  * Created: 14/02/2017 13:12:10
- *  Author: robbi
+ *  Author: Robbie
  */
 #include "main.h"
 
-void setupPorts(void)
+void setupIO(void)
 {
 	//PA1 ADC input
 	//PA2 Pixel output
-	//PA3 button input with interrupt, external Pullup placed
+	//PA3 button input with interrupt & internal input Pull-up
 	//PA7 Indication l\e\d\ output
-	DDRA = (1<<PIXELPIN) | (1<<LEDPIN);
+	userDDR = (1<<PIXELPIN) | (1<<LEDPIN);	//set pixel and LED output
+	userPort = (1<<BUTTONPIN);				//set button Pull-up
 }
+void initTimer1(void)
+{
+
+}
+
 void visualize_music(float fade_scale)
 {
 	
@@ -26,26 +32,20 @@ int compute_average(int *avgs, int len) {
 	sum += avgs[i];
 
 	return (int)(sum / len);
-
 }
 
-void initTimer1(void)
-{
-	//Timer1 (16bit) Klaarmaken voor delay berekening
-	//TCCR1A &= (0<<WGM11) & (0<<WGM10); Forcing WGM[1:0] at 0
-	TCCR1B |= (1<<WGM12) | (1<<CS10);	
-}
 
-void cycleDelay(uint8_t cycles)
-{
-	//init + start Timer1 en wacht op interrupt op OCF1A -> return
-	
-	OCR1AH = 0xFF00 & cycles;
-	OCR1AL = 0x00FF & cycles;
-	
-	while ((TIFR1 & (1<<OCF1A)) == 0); //Do nothing
-	return;
-}
+
+// void cycleDelay(uint8_t cycles)
+// {
+// 	//init + start Timer1 en wacht op interrupt op OCF1A -> return
+// 	
+// 	OCR1AH = 0xFF00 & cycles;
+// 	OCR1AL = 0x00FF & cycles;
+// 	
+// 	while ((TIFR1 & (1<<OCF1A)) == 0); //Do nothing
+// 	return;
+// }
 
 /*ADC functions*/
 void initADC(void)
